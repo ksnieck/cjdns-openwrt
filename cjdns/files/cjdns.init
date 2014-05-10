@@ -1,0 +1,42 @@
+#!/bin/sh /etc/rc.common
+# cjdns init script
+
+START=50
+LOGTO="/tmp/cjdroute.log"
+CJDROUTE_BIN="/usr/sbin/cjdroute"
+if [ -z "$CJDROUTE_CONF" ]; then CJDROUTE_CONF="/etc/cjdroute.conf"; fi
+if [ -z "$LOGTO" ]; then LOGTO="/dev/null"; fi
+PID=$(pgrep -o -f "$CJDROUTE_BIN")
+
+start() {
+    if [[ ! -r $CJDROUTE_CONF ]] then
+        $CJDROUTE_BIN --genconf >> $CJDROUTE_CONF
+        chmod 660 $CJDROUTE_CONF
+    fi
+
+    if [ -z "$PID" ]; then
+        $CJDROUTE_BIN < $CJDROUTE_CONF > $LOGTO 2>&1
+            if [ $? -gt 0 ]; then
+                echo "Failed to start cjdns"
+                    return 1
+            else
+                echo "Started cjdns successfully"
+                    fi
+    else
+        echo "cjdns is already running"
+            fi
+}
+
+stop() {
+    if [ -z "$PID" ]; then
+        echo "cjdns is not running"
+            return 1
+    else
+        while [ -n "$(pgrep -o -f "$CJDROUTE_BIN")" ]; do
+            kill $(pgrep -o -f "$CJDROUTE_BIN") &> /dev/null
+                echo "* Waiting for cjdns to shut down..."
+                sleep 1
+                done
+                if [ $? -gt 0 ]; then return 1; fi
+                    fi
+}

@@ -34,6 +34,10 @@ define Package/cjdns
   MAINTAINER:=cjd -- #cjdns on irc.efnet.org
 endef
 
+define cjdns/conffiles
+  /etc/cjdroute.conf
+endef
+
 define Build/Configure
 	$(CP) plans/mipso32_plan.json $(PKG_BUILD_DIR)/node_build/dependencies/cnacl/node_build/plans
 endef
@@ -48,10 +52,8 @@ CMAKE_OPTIONS += -DHAVE_NACL=1
 define Package/cjdns/install
 	$(INSTALL_DIR) $(1)/usr/sbin
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/cjdroute   $(1)/usr/sbin/cjdroute
-
-# TODO: Autostart.
-#	$(INSTALL_DIR) $(1)/etc/cjdns
-#	$(INSTALL_DATA) $(PKG_SOURCE_SUBDIR)/scripts/cjdns.sh
+	$(INSTALL_DIR) $(1)/etc/init.d
+	$(INSTALL_BIN) ./files/cjdns.init $(1)/etc/init.d/cjdns
 endef
 
 $(eval $(call BuildPackage,cjdns))
