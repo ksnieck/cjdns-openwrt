@@ -1,14 +1,14 @@
-Index: cjdns-HEAD/node_build/make.js
-===================================================================
---- cjdns-HEAD.orig/node_build/make.js	2014-04-18 10:39:55.000000000 +0400
-+++ cjdns-HEAD/node_build/make.js	2014-04-18 11:44:24.730137000 +0400
-@@ -211,6 +211,9 @@
+diff --git a/node_build/make.js b/node_build/make.js
+index 83a311d..550f625 100644
+--- a/node_build/make.js
++++ b/node_build/make.js
+@@ -252,6 +252,9 @@ Builder.configure({
          builder.config.includeDirs.push(
              BUILDDIR+'/dependencies/libuv/include/'
          );
-+	builder.config.cflags.push(
-+	    '-fno-stack-protector'
-+	);
-         Fs.exists(BUILDDIR+'/dependencies/libuv/out/Release/libuv.a', waitFor(function (exists) {
-             if (exists) { return; }
-             console.log("Build Libuv");
++        builder.config.cflags.push(
++            '-fno-stack-protector'
++        );
+         var libuvBuilt;
+         var python;
+         nThen(function (waitFor) {
